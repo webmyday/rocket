@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  rundeck:
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+#      args:
+#          - PDI_PENTAHO_PASSWORD=${PDI_PENTAHO_PASSWORD}
+    image: jordan/rundeck
+    container_name: rundeck
+#    environment:
+#        - MYSQL_USER=${MYSQL_BIUSER}
+#        - MYSQL_PASSWORD=${MYSQL_BIUSER_PASSWORD}
+#        - MYSQL_DATABASE=${MYSQL_DATABASE}
+#        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}      
+#    volumes: 
+#        - ${MYSQL_DATA_VOLUME}:/var/lib/mysql
+#        - ${BASE_FOLDER}/Docker/Mysql/Dumps:/dumps
+#        - ${BASE_FOLDER}/Docker/Mysql/Init:/docker-entrypoint-initdb.d
+    ports:
+        - "${SSH_PDI_HOST_PORT}:22"
+

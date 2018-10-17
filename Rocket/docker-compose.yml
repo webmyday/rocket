@@ -1,0 +1,57 @@
+version: '2.1'
+
+networks:
+  lb_web:
+#    external: true
+  back:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.${SUBNET}.0/24
+services:
+  db:
+    image: mongo:3.4
+    volumes:
+      - /volumes/mgdata/runtime/db:/data/db
+      - /volumes/mgdata/dump:/dump
+    command: mongod --smallfiles --oplogSize 128
+    networks:
+    - back
+  app:
+    image: rocket.chat:latest
+    restart: always
+    environment:
+      - MONGO_URL=mongodb://db:27017/meteor
+      - ROOT_URL=https://${VIRTUAL_HOST}
+      - MAIL_URL
+    volumes:
+      - /volumes/rocket/logs:/home/app/logs
+      - /volumes/rocket/data/uploads:/app/uploads
+    networks:
+      - back
+  web:
+    image: nginx:latest
+    volumes:
+      - ./Docker/Nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+    environment:
+      - VIRTUAL_HOST
+    networks:
+      - back
+      - lb_web
+    ports:
+        - "8010:80"
+
+
+#    restart: unless-stopped
+#    volumes_from:
+#      - fpm
+#    links:
+#      -  mariadb:db
+#      - myadmin:myadmin
+#      - fpm:fpm
+#    logging:
+#      driver: "json-file"
+#      options:
+#         max-size: "50m"
+#         max-file: "10" 
